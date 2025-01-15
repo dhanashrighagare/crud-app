@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "https://crudcrud.com/api/2ef4016a95c041e5a4f52bf939f661a6";
+const BASE_URL = "https://crudcrud.com/api/9750621218e74a1e9b750fb632ccc7ee";
 
 // Fetch all members
 export const fetchMembers = async () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Container, Row, Col } from 'react-bootstrap';
+import { Button, Table, Container, Row, Col, Pagination } from 'react-bootstrap';
 import { deleteMember } from '../api';
 import SweetAlert from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 
 const MemberList = ({ setMembers, members }) => {
   const [membersState, setMembersState] = useState(members);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
 
   useEffect(() => {
     setMembersState(members); // Keep this updated whenever members change
@@ -27,13 +29,29 @@ const MemberList = ({ setMembers, members }) => {
         setMembersState((prevMembers) =>
           prevMembers.filter((member) => member._id !== id)
         );
-        toast.success("Member deleted successfully!");
+        toast.success("Member deleted successfully!", {
+                position: "top-center", 
+                autoClose: 5000, 
+              });
+        
       } catch (error) {
-        toast.error("Error deleting member.");
+        toast.error("Error deleting member.", {
+          position: "top-center", 
+          autoClose: 5000, 
+        });
       }
     }
   };
 
+   // Pagination logic
+   const indexOfLastMember = currentPage * pageSize;
+   const indexOfFirstMember = indexOfLastMember - pageSize;
+   const currentMembers = membersState.slice(indexOfFirstMember, indexOfLastMember);
+ 
+   const totalPages = Math.ceil(membersState.length / pageSize);
+ 
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+  
   return (
     <Container fluid className="mt-4">
       <Row>
@@ -58,8 +76,8 @@ const MemberList = ({ setMembers, members }) => {
               </tr>
             </thead>
             <tbody>
-              {membersState.length > 0 ? (
-                membersState.map((member) => (
+            {currentMembers.length > 0 ? (
+                currentMembers.map((member) => (
                   <tr key={member._id}>
                     <td>{member._id}</td>
                     <td>{member.name}</td>
@@ -92,6 +110,20 @@ const MemberList = ({ setMembers, members }) => {
               )}
             </tbody>
           </Table>
+
+           {/* Pagination Component */}
+           <Pagination className="justify-content-center">
+            {[...Array(totalPages).keys()].map((number) => (
+              <Pagination.Item
+                key={number + 1}
+                active={number + 1 === currentPage}
+                onClick={() => handlePageChange(number + 1)}
+              >
+                {number + 1}
+              </Pagination.Item>
+            ))}
+          </Pagination>
+          
           <ToastContainer />
         </Col>
       </Row>

@@ -4,10 +4,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchMemberById, updateMember } from "../api";
 import { ToastContainer, toast } from "react-toastify";
 
-const EditMember = ({ setMembers }) => {
+const EditMember = () => {
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    Email: "",
     age: "",
     parent_id: null, // Set initial parent_id as null
   });
@@ -28,7 +28,7 @@ const EditMember = ({ setMembers }) => {
           // If member is found, set form data with the response
           setFormData({
             name: member.name || "",
-            email: member.email || "",
+            email: member.Email || "",
             age: member.age || "",
             parent_id: member.parent_id || null, // Set default value as null
           });
@@ -59,12 +59,7 @@ const EditMember = ({ setMembers }) => {
     e.preventDefault(); // Prevent form submission from reloading the page
 
     // Validation check (optional)
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.age ||
-      formData.parent_id === null
-    ) {
+    if (!formData.name || !formData.email || !formData.age || formData.parent_id === null) {
       toast.error("All fields are required!");
       return;
     }
@@ -86,19 +81,11 @@ const EditMember = ({ setMembers }) => {
       // Log the response from the API
       console.log("Updated member:", updatedMember);
 
-      if (updatedMember) {
-        // Update the members list in the parent component's state
-        setMembers((prevMembers) =>
-          prevMembers.map((m) =>
-            m._id === updatedMember._id ? updatedMember : m
-          )
-        );
+      toast.success("Member updated successfully!");
 
-        toast.success("Member updated successfully!");
+      // Redirect to the list page after successful update
+      navigate("/");
 
-        // Redirect to the list page after successful update
-        navigate("/");
-      }
     } catch (error) {
       toast.error("Error updating member.");
       console.error("Error updating member:", error); // Log error for debugging

@@ -27,8 +27,8 @@ const CreateMember = ({ setMembers }) => {
       const newMember = await createMember(formData);
       setMembers((prevMembers) => [...prevMembers, newMember]);
       toast.success("Member created successfully!", {
-        position: toast.POSITION.TOP_CENTER, 
-        autoClose: 50, 
+        position: "top-center", 
+        autoClose: 5000, 
       });
 
       navigate('/'); 
@@ -37,6 +37,14 @@ const CreateMember = ({ setMembers }) => {
     } catch (error) {
       toast.error("Error creating member.");
     }
+  };
+
+  const handleCancel = () => {
+    // Reset form data
+    setFormData({ name: '', Email: '', age: 0, parent_id: 0 });
+
+    // Optionally, navigate to another page (e.g., home page)
+    navigate('/');
   };
 
   return (
@@ -84,8 +92,11 @@ const CreateMember = ({ setMembers }) => {
         </Form.Group>
 
         <div className="text-center">
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" className="me-2">
             Create Member
+          </Button>
+          <Button variant="secondary" onClick={handleCancel}>
+            Cancel
           </Button>
         </div>
       </Form>
